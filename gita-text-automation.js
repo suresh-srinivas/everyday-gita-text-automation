@@ -22,7 +22,7 @@ const chapterData = [
     { chapter: 18, name: 'Moksha-Sanyasa Yoga', verses: 78 }
 ];
 
-let currentChapterIndex = chapterData.findIndex(ch => ch.chapter === 12); // Start with Chapter 12
+let currentChapterIndex = chapterData.findIndex(ch => ch.chapter === 1); // Start with Chapter 12
 
 let chapterVerses = [];
 let verseIndex = 1;  // starting from verse 1
@@ -31,7 +31,7 @@ const batchSize = 10;
 function extractVerseContent(document) {
     let paragraphs = document.querySelectorAll('p');
     let extractedText = '';
-    for (let i = 0; i < 4 && i < paragraphs.length; i++) {
+    for (let i = 0; i < 3 && i < paragraphs.length; i++) {
         extractedText += paragraphs[i].innerText + '\n\n';
     }
     return extractedText.trim() || null;
@@ -48,13 +48,17 @@ function downloadToFile(content, filename, contentType) {
     URL.revokeObjectURL(a.href);
 }
 
+function applyHeader(chapter, verseNum) {
+    return "*" + "Chapter " + chapter + "-" + "Verse " + verseNum + "*" + "\n\n";
+}
+
 function fetchSingleVerse(chapter, verseNum) {
     return fetch(baseUrl + chapter + '-' + verseNum)
         .then(response => response.text())
         .then(text => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(text, 'text/html');
-            return extractVerseContent(doc);
+            return applyHeader(chapter, verseNum) + extractVerseContent(doc);
         });
 }
 
